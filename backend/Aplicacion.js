@@ -24,7 +24,7 @@ http.createServer(function (request, response)
   con.connect(function(err) 
   {
     if (err) throw err;
-    console.log("CONECTADO!");
+    console.log("CONECTADO!");  
     con.query("SELECT * FROM login WHERE USERNAME='"+user+"' AND PASSWORD='"+password+"'", function (err, result, fields) 
     {
       if (err) throw err;
