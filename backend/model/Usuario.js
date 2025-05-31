@@ -1,21 +1,26 @@
-const sequelize = require('../sequelize.js');
 const { DataTypes } = require('sequelize');
+const sequelize = require('../sequelize'); // aquí estaba el posible error
 
-// MODELO DEL USUARIO
-const Usuario = sequelize.define('Usuario', {
-  idLOGIN:{
-    type:DataTypes.INTEGER,
-    autoIncrement:true,
-    primaryKey:true},
+const Usuario = sequelize.define('usuario', {
+  idLOGIN: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   USERNAME: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    allowNull: false
   },
   PASSWORD: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    allowNull: false
   },
   TIPOUSUARIO: {
     type: DataTypes.STRING
-  },
-}, { tableName: 'usuario' });
+  }
+}, {
+  tableName: 'usuario',
+  timestamps: false
+});
 
-module.exports=Usuario;
+module.exports = Usuario;

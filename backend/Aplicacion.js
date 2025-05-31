@@ -1,56 +1,71 @@
-let http = require('http');
-let url = require('url');
-let mysql = require('mysql');
+const http = require('http');
+const url = require('url');
+const sequelize = require('./sequelize');
+const Usuario = require('./model/Usuario');
 
-const {Sequelize, DataTypes}= require('sequelize');
-const Usuario = require('./model/Usuario.js');
-
-const sequelize = new Sequelize('usuarios', 'root', '1234', {
-  host: 'localhost',
-  dialect: 'mysql',
-});
-
-
-http.createServer(async function (request, response) 
-{
-  response.setHeader('Access-Control-Allow-Origin','*');
-  response.writeHead(200, {'Content-Type': 'text/html'});
-  let q = url.parse(request.url, true).query;
-  let user=q.User;
-  console.log("user:"+user);
-  let password=q.password;
-  console.log("password:"+password);
-  let tipousuario; 
-  let respuesta;
+async function inicializarBaseDeDatos() {
   try {
     await sequelize.authenticate();
-    console.log('Conexión a la base de datos establecida correctamente.');
+    console.log('Conexión exitosa a la base de datos');
 
-    const usuario=await Usuario.findOne({
-      where: {
-        USERNAME: user,
-        PASSWORD: password
+    await Usuario.bulkCreate([
+      { USERNAME: 'admin', PASSWORD: '1234', TIPOUSUARIO: 'administrador' },
+      { USERNAME: 'usuario', PASSWORD: '123456', TIPOUSUARIO: 'usuario' }
+    ]);
+
+    console.log(' Usuarios insertados');
+  } catch (err) {
+    console.error('Error al inicializar la base de datos:', err);
+    process.exit(1);
+  }
+}
+
+async function iniciarServidor() {
+  http.createServer(async function (request, response) {
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.writeHead(200, { 'Content-Type': 'application/json' });
+
+    const q = url.parse(request.url, true).query;
+    const user = q.User;
+    const password = q.password;
+
+    try {
+      const usuario = await Usuario.findOne({
+        where: {
+          USERNAME: user,
+          PASSWORD: password
+        }
+      });
+
+      if (usuario) {
+        response.end(JSON.stringify({
+          status: "yes",
+          tipo: usuario.TIPOUSUARIO,
+          user: usuario.USERNAME
+        }));
+      } else {
+        response.end(JSON.stringify({
+          status: "no",
+          tipo: "none",
+          user: "none"
+        }));
       }
-    });
-    if (usuario) {
-      console.log('Usuario encontrado:', usuario);
-      tipousuario = usuario.TIPOUSUARIO;
-      username=usuario.USERNAME;
-      const respuesta = { status:"yes", tipo: tipousuario, user: username};
-      response.end(JSON.stringify(respuesta));
-    } else {
-      const respuesta = { status: "no", tipo: "none", user: "none" };
-      response.end(JSON.stringify(respuesta));
+
+    } catch (error) {
+      console.error(' Error en la consulta:', error);
+      response.end(JSON.stringify({
+        status: "error",
+        message: "Error en el servidor"
+      }));
     }
 
-  } catch (error) {
-        console.error('Error al conectar con la base de datos:', error);
-    response.end(JSON.stringify({
-      status: "error",
-      message: "Error en el servidor"
-    })); 
-  }
+  }).listen(9999, () => {
+    console.log("Backend corriendo en el puerto 9999");
+  });
+}
 
-}).listen(9999, () => {
-  console.log("backend corriendo en el 9999");
-});
+// Ejecutar todo junto
+(async () => {
+  await inicializarBaseDeDatos();
+  await iniciarServidor();
+})();
