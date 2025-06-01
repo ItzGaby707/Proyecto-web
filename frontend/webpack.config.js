@@ -28,7 +28,7 @@ module.exports = {
         filename: 'main.js'
     },
     devServer: {
-        port: 5501
+        port: 5500
     },
     plugins: [
         new HtmlWPP({
