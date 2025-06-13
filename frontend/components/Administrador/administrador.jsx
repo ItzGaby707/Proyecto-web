@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Pregunta from "../Preguntas/pregunta.jsx";
-
+import AgregarModal from "../Preguntas/agregarModal.jsx";
 import {
   MDBContainer,
   MDBBtn,
@@ -15,6 +15,7 @@ const Administrador = () => {
   const [data, setData] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertText, setAlertText] = useState("");
+  const [showAgregar, setShowAgregar] = useState(false);
 
   useEffect(() => {
     fetch("http://localhost:9999/Preguntas")
@@ -40,22 +41,27 @@ const Administrador = () => {
         </MDBAlert>
       )}
 
-      <MDBBtn color="info" className="mb-3">
-        <Link to="/formulario" className="text-white text-decoration-none">
-          NUEVA PREGUNTA
-        </Link>
-      </MDBBtn>
+      <MDBBtn color="info" className="mb-3" onClick={() => setShowAgregar(true)}>
+        AGREGAR
+      <AgregarModal
+        show={showAgregar}
+        toggle={() => setShowAgregar(!showAgregar)}
+         />      
+
+        </MDBBtn>
+
 
       <MDBTable striped bordered>
         <MDBTableHead>
           <tr>
             <th>Pregunta</th>
+            <th className="text-center">Respuesta</th>
             <th className="text-center">Acciones</th>
           </tr>
         </MDBTableHead>
         <MDBTableBody>
-          {data.map((pregunta, index) => (
-            <Pregunta key={index} {...pregunta} />
+          {data.map((pregunta, id) => (
+            <Pregunta id={id} {...pregunta} />
           ))}
         </MDBTableBody>
       </MDBTable>

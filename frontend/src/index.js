@@ -3,6 +3,7 @@ import {
     Routes,
     Route,
 } from "react-router-dom";
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 
 import Login from "../components/Login/login.jsx";
 import Admin from "../components/Administrador/administrador.jsx";

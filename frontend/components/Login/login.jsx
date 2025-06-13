@@ -34,11 +34,9 @@ function App() {
       if (usuario.status === "yes") {
         sessionStorage.setItem('usuario', (usuario.user));
         if (usuario.tipo === "administrador") {
-          alert("Bienvenido Administrador");
           navigate('/proyecto/administrador');
         } else if (usuario.tipo === "usuario") {
           navigate('/proyecto/usuario');
-          alert("Bienvenido Usuario");
         }
       } else {
         alert("Credenciales incorrectas o inexistentes");
