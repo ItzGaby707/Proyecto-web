@@ -4,9 +4,9 @@ import {
     Route,
 } from "react-router-dom";
 
-import Login from "../components/login.jsx";
-import Admin from "../components/administrador.jsx";
-import Usuario from "../components/usuario.jsx";
+import Login from "../components/Login/login.jsx";
+import Admin from "../components/Administrador/administrador.jsx";
+import Usuario from "../components/Usuario/usuario.jsx";
 
 const App = () => {
     return (

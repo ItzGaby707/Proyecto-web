@@ -10,10 +10,11 @@ import {
   MDBIcon,
   MDBInput
 } from 'mdb-react-ui-kit';
-import "./login.css";
+import "../Login/login.css";
 
-import loginweb from "../src/assets/loginweb.png"; 
-import geometrydash from "../src/assets/geometrydash.png"; 
+import loginweb from "../../src/assets/loginweb.png"; 
+import geometrydash from "../../src/assets/geometrydash.png"; 
+
 
 function Usuario() { 
     

@@ -14,8 +14,8 @@ import {
 } from 'mdb-react-ui-kit';
 import "./login.css";
 
-import loginweb from "../src/assets/loginweb.png";
-import geometrydash from "../src/assets/geometrydash.png";
+import loginweb from "../../src/assets/loginweb.png";
+import geometrydash from "../../src/assets/geometrydash.png";
 
 
 
@@ -28,7 +28,7 @@ function App() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost:9999?User=${username}&password=${password}`);
+      const response = await fetch(`http://localhost:9999/login?User=${username}&password=${password}`);
       const usuario = await response.json();
 
       if (usuario.status === "yes") {

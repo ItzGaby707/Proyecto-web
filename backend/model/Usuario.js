@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../sequelize'); // aquí estaba el posible error
 
 const Usuario = sequelize.define('usuario', {
-  idLOGIN: {
+  idUsuario: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
