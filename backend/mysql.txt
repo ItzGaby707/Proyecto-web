@@ -20,3 +20,11 @@ CREATE TABLE preguntas(
     
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
 FLUSH PRIVILEGES;
+
+use usuarios;
+INSERT INTO preguntas (pregunta, respuesta) VALUES ('¿Figura con 4 lados y ángulos rectos?', 'Cuadrado');
+INSERT INTO preguntas (pregunta, respuesta) VALUES ('¿Figura sin lados ni vértices?', 'Circulo');
+INSERT INTO preguntas (pregunta, respuesta) VALUES ('¿Qué figura tiene 6 lados?', 'Hexagono');
+INSERT INTO preguntas (pregunta, respuesta) VALUES ('¿Polígono con 8 lados?', 'Octagono');
+INSERT INTO preguntas (pregunta, respuesta) VALUES ('¿Figura con 3 lados y 3 vértices?', 'Triangulo');
+INSERT INTO preguntas (pregunta, respuesta) VALUES ('¿Polígono con 5 lados?', 'Pentagono');

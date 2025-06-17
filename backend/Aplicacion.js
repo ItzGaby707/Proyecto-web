@@ -4,6 +4,7 @@ const sequelize = require('./sequelize');
 const Usuario = require('./model/Usuario');
 const cors = require('cors');
 
+app.use(express.static('public'));
 
 app.use(cors({
   origin: '*',
