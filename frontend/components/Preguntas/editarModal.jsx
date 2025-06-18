@@ -17,7 +17,7 @@ const EditarModal = ({ show, toggle, id, preguntaInicial, respuestaInicial }) =>
 
   const handleGuardar = async() => {
     try {
-        const response = await fetch(`http://localhost:9999/Preguntas/${id+1}`, { //Se inicio el id en 0, por lo que se le suma 1 jeje
+        const response = await fetch(`http://localhost:9999/Preguntas/${id}`, { //Se inicio el id en 0, por lo que se le suma 1 jeje
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -34,6 +34,7 @@ const EditarModal = ({ show, toggle, id, preguntaInicial, respuestaInicial }) =>
         
     }
     toggle();
+    window.location.reload(); 
 
   };
 

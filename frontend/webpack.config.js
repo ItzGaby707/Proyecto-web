@@ -25,10 +25,14 @@ module.exports = {
     entry: "./index.js",
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'main.js'
+        filename: 'main.js',
+        publicPath: '/'
     },
     devServer: {
-        port: 5500
+        
+        contentBase: path.join(__dirname, 'public'), // en lugar de static.directory
+        port: 5500,
+        historyApiFallback: true,
     },
     plugins: [
         new HtmlWPP({

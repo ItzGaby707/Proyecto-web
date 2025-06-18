@@ -30,6 +30,7 @@ const AgregarModal = ({ show, toggle }) => {
     }
 
       toggle();
+      window.location.reload(); 
     }
   };
 

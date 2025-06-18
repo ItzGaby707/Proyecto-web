@@ -9,7 +9,7 @@ const EliminarModal = ({ show, toggle,id, pregunta }) => {
   
   const handleEliminar = async() => {
     try {
-        const response = await fetch(`http://localhost:9999/Preguntas/${id+1}`, { //Se inicio el id en 0, por lo que se le suma 1 jeje
+        const response = await fetch(`http://localhost:9999/Preguntas/${id}`, { //Se inicio el id en 0, por lo que se le suma 1 jeje
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -25,6 +25,7 @@ const EliminarModal = ({ show, toggle,id, pregunta }) => {
         
     }
     toggle();
+    window.location.reload(); 
 
   };
 

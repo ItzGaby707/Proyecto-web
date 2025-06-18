@@ -32,7 +32,9 @@ function App() {
       const usuario = await response.json();
 
       if (usuario.status === "yes") {
+        sessionStorage.setItem('idUsuario', (usuario.idUsuario));
         sessionStorage.setItem('usuario', (usuario.user));
+        sessionStorage.setItem('tipo', (usuario.tipo));
         if (usuario.tipo === "administrador") {
           navigate('/proyecto/administrador');
         } else if (usuario.tipo === "usuario") {

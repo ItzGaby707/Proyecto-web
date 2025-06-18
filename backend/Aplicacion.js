@@ -25,6 +25,7 @@ app.get('/login', async (req, res) => {
     if (usuario) {
       res.json({
         status: 'yes',
+        idUsuario: usuario.idUsuario,
         tipo: usuario.TIPOUSUARIO,
         user: usuario.USERNAME
       });
@@ -51,8 +52,11 @@ app.get('/Preguntas', async (req, res) => {
       type: sequelize.QueryTypes.SELECT
     });
     res.json(preguntas);
-    //console.log(' Preguntas obtenidas correctamente: ' + preguntas);Devuelve las preguntas por separado como objeto
-    
+    console.log(' Preguntas obtenidas correctamente: ' + preguntas);//Devuelve las preguntas por separado como objeto
+    preguntas.forEach(pregunta => {
+      console.log(`ID: ${pregunta.idPregunta}, Pregunta: ${pregunta.pregunta}, Respuesta: ${pregunta.idFigura}`);
+    }
+    );
   } catch (error) {
     console.error(' Error al obtener preguntas:', error);
     res.status(500).json({ error: 'Error al obtener preguntas' });
@@ -110,7 +114,97 @@ app.post('/Preguntas', async (req, res) => {
   }
 });
 
-// Verificar conexión y levantar servidor
+app.get('/Ejercicios', async (req, res) => {
+  try {
+    const ejercicios = await sequelize.query(`
+      SELECT idEjercicio, nombre, descripcion
+      FROM EJERCICIOS
+      ORDER BY idEjercicio DESC
+    `, {
+      type: sequelize.QueryTypes.SELECT
+    });
+
+    res.json(ejercicios);
+    console.log(' Ejercicios obtenidas correctamente: ' + ejercicios);
+    ejercicios.forEach(ejercicio => {
+      console.log(`ID: ${ejercicio.idEjercicio}, Nombre: ${ejercicio.nombre}, Descripción: ${ejercicio.descripcion}`);
+    });
+
+  } catch (error) {
+    console.error('Error al obtener ejercicios:', error);
+    res.status(500).json({ error: 'Error al obtener ejercicios' });
+    
+  }
+});
+app.get('/Ejercicios/:id/preguntas', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const preguntas = await sequelize.query(`
+      SELECT p.idPregunta, p.pregunta, f.nombre AS nombreFigura
+      FROM EJERCICIO_PREGUNTA ep
+      JOIN PREGUNTAS p ON ep.idPregunta = p.idPregunta
+      JOIN FIGURAS f ON p.idFigura = f.idFigura
+      WHERE ep.idEjercicio = ?
+      ORDER BY ep.orden ASC
+    `, {
+      replacements: [id],
+      type: sequelize.QueryTypes.SELECT
+    });
+
+    res.json(preguntas);
+  } catch (error) {
+    console.error('Error al obtener preguntas del ejercicio:', error);
+    res.status(500).json({ error: 'Error al obtener preguntas del ejercicio' });
+  }
+});
+
+
+// Agregar un nuevo ejercicio
+app.post('/Ejercicios', async (req, res) => {
+  const { nombre, descripcion, creadoPor, preguntas } = req.body;
+  if (!nombre || !Array.isArray(preguntas) || preguntas.length === 0) {
+    return res.status(400).json({ error: 'Nombre y preguntas son requeridos' });
+  }
+  try {
+    const [result] = await sequelize.query(
+      'INSERT INTO EJERCICIOS (nombre, descripcion, creadoPor) VALUES (?, ?, ?)',
+      { replacements: [nombre, descripcion || '', creadoPor], type: sequelize.QueryTypes.INSERT }
+    );
+    const idEjercicio = result;
+    for (let i = 0; i < preguntas.length; i++) {
+      await sequelize.query(
+        'INSERT INTO EJERCICIO_PREGUNTA (idEjercicio, idPregunta, orden) VALUES (?, ?, ?)',
+        { replacements: [idEjercicio, preguntas[i], i + 1], type: sequelize.QueryTypes.INSERT }
+      );
+    }
+    res.status(201).json({ message: 'Ejercicio creado correctamente' });
+  } catch (error) {
+    console.error('Error al crear ejercicio:', error);
+    res.status(500).json({ error: 'Error interno al crear ejercicio' });
+  }
+});
+
+// Eliminar un ejercicio
+app.delete('/Ejercicios/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await sequelize.query('DELETE FROM EJERCICIO_PREGUNTA WHERE idEjercicio = ?', {
+      replacements: [id],
+      type: sequelize.QueryTypes.DELETE
+    });
+    await sequelize.query('DELETE FROM EJERCICIOS WHERE idEjercicio = ?', {
+      replacements: [id],
+      type: sequelize.QueryTypes.DELETE
+    });
+    res.json({ message: 'Ejercicio eliminado correctamente' });
+  } catch (error) {
+    console.error('Error al eliminar ejercicio:', error);
+    res.status(500).json({ error: 'Error interno al eliminar ejercicio' });
+  }
+});
+
+
 sequelize.authenticate()
   .then(() => {
     console.log('Conexión exitosa a la base de datos');

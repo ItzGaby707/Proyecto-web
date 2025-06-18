@@ -8,6 +8,8 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import Login from "../components/Login/login.jsx";
 import Admin from "../components/Administrador/administrador.jsx";
 import Usuario from "../components/Usuario/usuario.jsx";
+import PreguntasDeEjercicio from "../components/PreguntasEjercicio/PreguntasDeEjercicio.jsx";
+import CrearEjercicio from '../components/CrearEjercicio/crearEjercicio.jsx'; // Ajuste la ruta según su estructura
 
 const App = () => {
     return (
@@ -16,6 +18,9 @@ const App = () => {
                 <Route path="/" element={<Login />} />
                 <Route path="/proyecto/administrador" element={<Admin/>} />
                 <Route path="/proyecto/usuario" element={<Usuario/>}/>
+                <Route path="/proyecto/ejercicio/:idEjercicio" element={<PreguntasDeEjercicio />} />
+                <Route path="/proyecto/crear-ejercicio" element={<CrearEjercicio />} />
+                
                 <Route path="*" element={<h1>RECURSO NO ENCONTRADO</h1>} />
             </Routes>
         </div>

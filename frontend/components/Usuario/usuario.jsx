@@ -1,63 +1,93 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import {
+  MDBTable,
+  MDBTableHead,
+  MDBTableBody,
   MDBBtn,
   MDBContainer,
+  MDBIcon,
   MDBCard,
   MDBCardBody,
-  MDBCardImage,
-  MDBRow,
-  MDBCol,
-  MDBIcon,
-  MDBInput
-} from 'mdb-react-ui-kit';
-import "../Login/login.css";
+  MDBCardHeader,
+  MDBAlert,
+} from "mdb-react-ui-kit";
 
-import loginweb from "../../src/assets/loginweb.png"; 
-import geometrydash from "../../src/assets/geometrydash.png"; 
+const Administrador = () => {
+  const [ejercicios, setEjercicios] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertText, setAlertText] = useState("");
+  const navigate = useNavigate();
+  const usuario = sessionStorage.getItem("usuario")
 
+  useEffect(() => {
+    fetch("http://localhost:9999/Ejercicios")
+      .then((response) => response.json())
+      .then((data) => {
+        setEjercicios(data);
+      })
+      .catch((error) => {
+        console.error(error);
+        setShowAlert(true);
+        setAlertText("ERROR EN LA OBTENCIÓN DE EJERCICIOS");
+      });
+  }, []);
 
-function Usuario() { 
-    
-  const usuario = sessionStorage.getItem('usuario');
+  const handleCerrarSesion = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate("/");
+  };
+
   return (
-    <MDBContainer className="my-5">
+    <MDBContainer className="mt-5">
+      <MDBCard alignment="center">
+        <MDBCardHeader className="text-center text-white bg-primary">
+          <h5 className="fw-bold">EJERCICIOS DISPONIBLES PARA {usuario}</h5>
+        </MDBCardHeader>
+        <MDBCardBody>
+          {showAlert && (
+            <MDBAlert color="danger" dismiss>
+              {alertText}
+            </MDBAlert>
+          )}
 
-      <MDBCard className="rounded-3">
-        <MDBRow className='g-0'>
+          <MDBTable striped bordered className="bg-white text-secondary">
+            <MDBTableHead>
+              <tr className="text-dark bg-white">
+                <th className="text-center fw-bold">Nombre del Ejercicio</th>
+                <th className="text-center fw-bold">Descripción</th>
+              </tr>
+            </MDBTableHead>
+            <MDBTableBody>
+              {ejercicios.map((ejercicio) => (
+                <tr key={ejercicio.idEjercicio}>
+                  <td className="text-center">{ejercicio.nombre}</td>
+                  <td className="text-center">{ejercicio.descripcion}</td>
+                  <td className="text-center">
+                    <Link to={`/proyecto/ejercicio/${ejercicio.idEjercicio}`}>
+                      <MDBBtn size="sm" color="info">
+                        Ver Preguntas
+                      </MDBBtn>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </MDBTableBody>
+          </MDBTable>
 
-          <MDBCol md='6' className="d-none d-md-block">
-            <MDBCardImage 
-              src={loginweb} 
-              alt="login form" 
-              className='rounded-start w-100 h-100'
-              style={{ objectFit: 'cover' }}
-            />
-          </MDBCol>
-
-          <MDBCol md='6' sm='12' className='d-flex align-items-center'>
-            <MDBCardBody className='d-flex flex-column'>
-
-              <div className='d-flex flex-row mt-2 mb-4'>
-                <img 
-                  src={geometrydash}
-                  alt="Logo Geometry Flash" 
-                  style={{ width: '80px', height: 'auto' }} 
-                  className="me-3"
-                />
-                <span className="h1 fw-bold mb-0">¡Bienvenido {usuario} a Geometry Flash!</span>
-              </div>
-
-              <h5 className="fw-normal mb-4 pb-3" style={{ letterSpacing: '1px' }}>
-                {}
-              </h5>
-
-            </MDBCardBody>
-          </MDBCol>
-
-        </MDBRow>
+          <MDBBtn
+            color="danger"
+            onClick={handleCerrarSesion}
+            className="mt-4 d-block mx-auto"
+          >
+            <MDBIcon fas icon="sign-out-alt" className="me-2" />
+            CERRAR SESIÓN
+          </MDBBtn>
+        </MDBCardBody>
       </MDBCard>
     </MDBContainer>
   );
-}
+};
 
-export default Usuario;
+export default Administrador;

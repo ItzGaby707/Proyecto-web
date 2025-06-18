@@ -1,72 +1,127 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import Pregunta from "../Preguntas/pregunta.jsx";
-import AgregarModal from "../Preguntas/agregarModal.jsx";
+import { useNavigate, Link } from "react-router-dom";
 import {
-  MDBContainer,
-  MDBBtn,
   MDBTable,
   MDBTableHead,
   MDBTableBody,
-  MDBAlert
+  MDBBtn,
+  MDBContainer,
+  MDBIcon,
+  MDBCard,
+  MDBCardBody,
+  MDBCardHeader,
+  MDBAlert,
 } from "mdb-react-ui-kit";
-import "./administrador.css";
-
 
 const Administrador = () => {
-  const [data, setData] = useState([]);
+  const [ejercicios, setEjercicios] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertText, setAlertText] = useState("");
-  const [showAgregar, setShowAgregar] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:9999/Preguntas")
-      .then(response => response.json())
-      .then(data => {
-        setData(data);
+    fetch("http://localhost:9999/Ejercicios")
+      .then((response) => response.json())
+      .then((data) => {
+        setEjercicios(data);
       })
-      .catch(error => {
-        console.info(error);
+      .catch((error) => {
+        console.error(error);
         setShowAlert(true);
-        setAlertText("ERROR EN LA OBTENCIÓN DE DATOS");
+        setAlertText("ERROR EN LA OBTENCIÓN DE EJERCICIOS");
       });
   }, []);
 
+  const handleCerrarSesion = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate("/");
+  };
+
+  const handleEliminar = async (idEjercicio) => {
+    if (window.confirm("¿Estás seguro de que quieres eliminar este ejercicio?")) {
+      try {
+        const response = await fetch(`http://localhost:9999/Ejercicios/${idEjercicio}`, {
+          method: "DELETE",
+        });
+        if (response.ok) {
+          setEjercicios(ejercicios.filter((ejercicio) => ejercicio.idEjercicio !== idEjercicio));
+          setShowAlert(true);
+          setAlertText("Ejercicio eliminado correctamente");
+        } else {
+          throw new Error("Error al eliminar el ejercicio");
+        }
+      } catch (error) {
+        console.error(error);
+        setShowAlert(true);
+        setAlertText("ERROR AL ELIMINAR EL EJERCICIO");
+      }
+    }
+  }
+
   return (
-    <MDBContainer className="my-5 py-4 bg-white rounded">
-      <h1 className="text-center mb-3 fw-bold">CREAR, ALTAS, BAJAS Y CAMBIOS</h1>
-      <hr className="w-75 mx-auto" />
-
-      {showAlert && (
-        <MDBAlert color="danger" className="text-center">
-          {alertText}
-        </MDBAlert>
-      )}
-
-      <MDBBtn color="info" className="mb-3 d-block mx-auto" onClick={() => setShowAgregar(true)}>
-        CREAR UNA NUEVA PREGUNTA
-      <AgregarModal
-        show={showAgregar}
-        toggle={() => setShowAgregar(!showAgregar)}
-         />      
-
+    <MDBContainer className="mt-5">
+      <MDBCard alignment="center">
+        <MDBCardHeader className="text-center text-white bg-primary">
+          <h5 className="fw-bold">EJERCICIOS DISPONIBLES</h5>
+        </MDBCardHeader>
+        <MDBCardBody>
+          <MDBBtn
+          color="primary"
+          className="mb-4"
+          onClick={() => navigate("/proyecto/crear-ejercicio")}
+        >
+          <MDBIcon fas icon="plus" className="me-2" />
+          Crear Nuevo Ejercicio
         </MDBBtn>
+          {showAlert && (
+            <MDBAlert color="danger" dismiss>
+              {alertText}
+            </MDBAlert>
+          )}
+
+          <MDBTable striped bordered className="bg-white text-secondary">
+            <MDBTableHead>
+              <tr className="text-dark bg-white">
+                <th className="text-center fw-bold">Nombre del Ejercicio</th>
+                <th className="text-center fw-bold">Descripción</th>
+                <th className="text-center fw-bold">Acciones</th>
+              </tr>
+            </MDBTableHead>
+            <MDBTableBody>
+              {ejercicios.map((ejercicio) => (
+                <tr key={ejercicio.idEjercicio}>
+                  <td className="text-center">{ejercicio.nombre}</td>
+                  <td className="text-center">{ejercicio.descripcion}</td>
+                  <td className="text-center">
+                    <Link to={`/proyecto/ejercicio/${ejercicio.idEjercicio}`}>
+                      <MDBBtn size="sm" color="info">
+                        Ver Preguntas
+                      </MDBBtn>
+                    </Link>
+                      <MDBBtn
+                    color="primary"
+                    className="mb-4"
+                    onClick={()=>handleEliminar(ejercicio.idEjercicio)}
+                  >Eliminar ejercicio</MDBBtn>
 
 
-      <MDBTable striped bordered className="bg-white text-secondary">
-        <MDBTableHead>
-          <tr className="text-dark bg-white">
-            <th className="text-center fw-bold">Pregunta</th>
-            <th className="text-center fw-bold">Respuesta</th>
-            <th className="text-center fw-bold">Acciones</th>
-          </tr>
-        </MDBTableHead>
-        <MDBTableBody>
-          {data.map((pregunta, id) => (
-            <Pregunta id={id} {...pregunta} />
-          ))}
-        </MDBTableBody>
-      </MDBTable>
+                  </td>
+                </tr>
+              ))}
+            </MDBTableBody>
+          </MDBTable>
+
+          <MDBBtn
+            color="danger"
+            onClick={handleCerrarSesion}
+            className="mt-4 d-block mx-auto"
+          >
+            <MDBIcon fas icon="sign-out-alt" className="me-2" />
+            CERRAR SESIÓN
+          </MDBBtn>
+        </MDBCardBody>
+      </MDBCard>
     </MDBContainer>
   );
 };
