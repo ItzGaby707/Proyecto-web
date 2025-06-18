@@ -12,8 +12,9 @@ import {
   MDBCardHeader,
   MDBAlert,
 } from "mdb-react-ui-kit";
+import PreguntaGeometrica from "../Preguntas/preguntaGeometrica.jsx"; 
 
-const Administrador = () => {
+const Usuario = () => {
   const [ejercicios, setEjercicios] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertText, setAlertText] = useState("");
@@ -65,10 +66,13 @@ const Administrador = () => {
                   <td className="text-center">{ejercicio.nombre}</td>
                   <td className="text-center">{ejercicio.descripcion}</td>
                   <td className="text-center">
-                    <Link to={`/proyecto/ejercicio/${ejercicio.idEjercicio}`}>
-                      <MDBBtn size="sm" color="info">
-                        Ver Preguntas
+                    <Link to={`/proyecto/hacerEjercicio/${ejercicio.idEjercicio}`}>
+                      <MDBBtn 
+                        color="primary"
+                        className="mb-4">
+                        Resolver Ejercicio
                       </MDBBtn>
+                      
                     </Link>
                   </td>
                 </tr>
@@ -90,4 +94,4 @@ const Administrador = () => {
   );
 };
 
-export default Administrador;
+export default Usuario;

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as tmImage from "@teachablemachine/image";
 
-const PreguntaGeometrica = () => {
+const PreguntaGeometrica = (pregunta, nombrefigura) => {
   const webcamRef = useRef(null);
   const containerRef = useRef(null);
   const [figura, setFigura] = useState("Inicializando...");
@@ -79,6 +79,7 @@ const PreguntaGeometrica = () => {
           color: "#1e88e5"
         }}
       >
+        
         {figura}
       </div>
     </div>

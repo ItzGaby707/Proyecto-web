@@ -10,7 +10,7 @@ import Admin from "../components/Administrador/administrador.jsx";
 import Usuario from "../components/Usuario/usuario.jsx";
 import PreguntasDeEjercicio from "../components/PreguntasEjercicio/PreguntasDeEjercicio.jsx";
 import CrearEjercicio from '../components/CrearEjercicio/crearEjercicio.jsx'; // Ajuste la ruta según su estructura
-
+import Ejercicio from "../components/Ejercicio/Ejercicio.jsx"; // Ajuste la ruta según su estructura
 const App = () => {
     return (
         <div>
@@ -19,6 +19,8 @@ const App = () => {
                 <Route path="/proyecto/administrador" element={<Admin/>} />
                 <Route path="/proyecto/usuario" element={<Usuario/>}/>
                 <Route path="/proyecto/ejercicio/:idEjercicio" element={<PreguntasDeEjercicio />} />
+                <Route path="/proyecto/hacerEjercicio/:idEjercicio" element={<Ejercicio />} />
+                
                 <Route path="/proyecto/crear-ejercicio" element={<CrearEjercicio />} />
                 
                 <Route path="*" element={<h1>RECURSO NO ENCONTRADO</h1>} />

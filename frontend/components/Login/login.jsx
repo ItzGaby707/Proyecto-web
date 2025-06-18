@@ -89,10 +89,6 @@ function App() {
                 <button className="custom-btn gradient-custom-2"><span>Entrar</span></button>
                 
               </form>
-              <a className="small text-muted" href="#!">¿Olvidaste la contraseña?</a>
-              <p className="mb-5 pb-lg-2" style={{ color: '#393f81' }}>
-                ¿No tienes cuenta aún? <a href="#!" style={{ color: '#393f81' }}>Regístrate aquí</a>
-              </p>
             </MDBCardBody>
           </MDBCol>
 

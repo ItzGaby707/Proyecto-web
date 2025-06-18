@@ -45,7 +45,7 @@ const Administrador = () => {
           method: "DELETE",
         });
         if (response.ok) {
-          setEjercicios(ejercicios.filter((ejercicio) => ejercicio.idEjercicio !== idEjercicio));
+          window.location.reload(); // Recargar la página para actualizar la lista de ejercicios
           setShowAlert(true);
           setAlertText("Ejercicio eliminado correctamente");
         } else {

@@ -65,7 +65,7 @@ const CrearEjercicio = () => {
       .then((res) => res.json())
       .then((data) => {
         setMensaje({ tipo: "success", texto: data.message });
-        setTimeout(() => navigate("/proyecto/administrador"), 1500);
+        setTimeout(() => navigate("/proyecto/administrador"), 3000);
       })
       .catch((err) => {
         console.error("Error al crear ejercicio:", err);
