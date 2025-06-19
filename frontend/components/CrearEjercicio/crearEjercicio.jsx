@@ -10,8 +10,7 @@ import {
   MDBTableHead,
   MDBTableBody,
   MDBCheckbox,
-  MDBIcon,
-  MDBAlert
+  MDBIcon
 } from "mdb-react-ui-kit";
 import { useNavigate } from "react-router-dom";
 
@@ -22,8 +21,18 @@ const CrearEjercicio = () => {
   const [preguntasSeleccionadas, setPreguntasSeleccionadas] = useState([]);
   const [mensaje, setMensaje] = useState(null);
   const navigate = useNavigate();
-    const creadoPor = localStorage.getItem("idUsuario"); // Debe guardarse al iniciar sesión
-
+  const [creadoPor, setCreadoPor] = useState("");
+useEffect(() => {
+    try {
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        const idUsuario = sessionStorage.getItem("idUsuario");
+        setCreadoPor(idUsuario);
+      }
+    } catch (error) {
+      console.warn("SessionStorage no disponible:", error);
+      setMensaje({ tipo: "warning", texto: "Problema de autenticación" });
+    }
+  }, []);
   useEffect(() => {
     fetch("http://localhost:9999/Preguntas")
       .then((res) => res.json())
@@ -65,7 +74,7 @@ const CrearEjercicio = () => {
       .then((res) => res.json())
       .then((data) => {
         setMensaje({ tipo: "success", texto: data.message });
-        setTimeout(() => navigate("/proyecto/administrador"), 3000);
+        setTimeout(() => navigate("/proyecto/administrador"));
       })
       .catch((err) => {
         console.error("Error al crear ejercicio:", err);
@@ -80,11 +89,6 @@ const CrearEjercicio = () => {
           <h5 className="fw-bold">CREAR NUEVO EJERCICIO</h5>
         </MDBCardHeader>
         <MDBCardBody>
-          {mensaje && (
-            <MDBAlert color={mensaje.tipo || "info"} dismiss>
-              {mensaje.texto || "Ya quedó"}
-            </MDBAlert>
-          )}
 
           <MDBInput
             label="Nombre del Ejercicio"

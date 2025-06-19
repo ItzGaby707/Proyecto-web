@@ -10,7 +10,6 @@ import {
   MDBCard,
   MDBCardBody,
   MDBCardHeader,
-  MDBAlert,
 } from "mdb-react-ui-kit";
 
 const Administrador = () => {
@@ -33,8 +32,9 @@ const Administrador = () => {
   }, []);
 
   const handleCerrarSesion = () => {
-    localStorage.clear();
-    sessionStorage.clear();
+    sessionStorage.removeItem("idUsuario");
+    sessionStorage.removeItem("usuario");
+    sessionStorage.removeItem("tipo");
     navigate("/");
   };
 
@@ -45,7 +45,7 @@ const Administrador = () => {
           method: "DELETE",
         });
         if (response.ok) {
-          window.location.reload(); // Recargar la página para actualizar la lista de ejercicios
+          setEjercicios(ejercicios.filter(ej => ej.idEjercicio !== idEjercicio));
           setShowAlert(true);
           setAlertText("Ejercicio eliminado correctamente");
         } else {
@@ -74,11 +74,6 @@ const Administrador = () => {
           <MDBIcon fas icon="plus" className="me-2" />
           Crear Nuevo Ejercicio
         </MDBBtn>
-          {showAlert && (
-            <MDBAlert color="danger" dismiss>
-              {alertText}
-            </MDBAlert>
-          )}
 
           <MDBTable striped bordered className="bg-white text-secondary">
             <MDBTableHead>

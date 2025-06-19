@@ -45,7 +45,7 @@ VALUES ('admin', '1234', 'administrador'),
 
 INSERT INTO figuras (nombre)
 VALUES ('Circulo'), ('Cuadrado'), ('Triangulo'), ('Rombo'),
-       ('Rectangulo'), ('Trapecio'), ('Cometa'), ('Hexagono'),('Pentagono'),('Semicirculo');
+       ('Rectangulo'), ('Paralelogramo'), ('Trapecio'), ('Estrella'),('Corazon'),('Hexagono');
        
 INSERT INTO preguntas (idPregunta, pregunta, idFigura) VALUES
 (1, '¿Puedes representar el círculo?', 1),
@@ -53,11 +53,11 @@ INSERT INTO preguntas (idPregunta, pregunta, idFigura) VALUES
 (3, '¿Puedes representar el triángulo?', 3),
 (4, '¿Puedes representar el rombo?', 4),
 (5, '¿Puedes representar el rectángulo?', 5),
-(6, '¿Puedes representar el trapecio?', 6),
-(7, '¿Puedes representar el cometa?', 7),
-(8, '¿Puedes representar el hexágono?', 8),
-(9, '¿Puedes representar el pentágono?', 9),
-(10, '¿Puedes representar el semicírculo?', 10);
+(6, '¿Puedes representar el paralelogramo?', 6),
+(7, '¿Puedes representar el trapecio?', 7),
+(8, '¿Puedes representar el estrella?', 8),
+(9, '¿Puedes representar el corazon?', 9),
+(10, '¿Puedes representar el hexagono?', 10);
 
 
 INSERT INTO ejercicios (idEjercicio, nombre, descripcion, creadoPor) VALUES

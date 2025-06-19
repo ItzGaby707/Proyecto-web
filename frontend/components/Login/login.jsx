@@ -26,10 +26,20 @@ function App() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    try {
+    if (sessionStorage.getItem('idUsuario')) {
+      alert("Ya has iniciado sesión");
+        if (sessionStorage.getItem('tipo') === "administrador") {
+          navigate('/proyecto/administrador');
+        }
+        if (sessionStorage.getItem('tipo') === "usuario") {
+          navigate('/proyecto/usuario');
+        }
+      return;
+    }
+    try { 
       const response = await fetch(`http://localhost:9999/login?User=${username}&password=${password}`);
       const usuario = await response.json();
+
 
       if (usuario.status === "yes") {
         sessionStorage.setItem('idUsuario', (usuario.idUsuario));

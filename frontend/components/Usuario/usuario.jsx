@@ -9,8 +9,7 @@ import {
   MDBIcon,
   MDBCard,
   MDBCardBody,
-  MDBCardHeader,
-  MDBAlert,
+  MDBCardHeader
 } from "mdb-react-ui-kit";
 import PreguntaGeometrica from "../Preguntas/preguntaGeometrica.jsx"; 
 
@@ -48,9 +47,7 @@ const Usuario = () => {
         </MDBCardHeader>
         <MDBCardBody>
           {showAlert && (
-            <MDBAlert color="danger" dismiss>
               {alertText}
-            </MDBAlert>
           )}
 
           <MDBTable striped bordered className="bg-white text-secondary">
