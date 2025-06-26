@@ -27,6 +27,9 @@ const [alertText, setAlertText] = useState("");
 const navigate = useNavigate();
 // Se obtiene el nombre de usuario almacenado en la sesión (sessionStorage)
 const usuario = sessionStorage.getItem("usuario");
+if (!usuario) {
+  navigate("/"); // Si no hay usuario, redirige a la página principal
+}
 // Hook useEffect que se ejecuta una sola vez cuando el componente se monta
 useEffect(() => {
   // Se realiza una petición GET al servidor para obtener la lista de ejercicios

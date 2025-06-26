@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   MDBBtn,
@@ -23,28 +23,27 @@ function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  
+  
+  
+  const usuario = sessionStorage.getItem('usuario');
+  const tipo    = sessionStorage.getItem('tipo');
+
+  useEffect(() => {
+    if (usuario) {
+      if (tipo === 'administrador') {
+        navigate('/proyecto/administrador', { replace: true });
+      } else {
+        navigate('/proyecto/usuario',      { replace: true });
+      }
+    }
+  }, [usuario, tipo, navigate]);
 
   // Función que maneja el evento de inicio de sesión del formulario
     const handleLogin = async (e) => {
       // Evita que el formulario recargue la página al enviarse
       e.preventDefault();
-
-      // Verifica si ya hay una sesión activa
-      if (sessionStorage.getItem('idUsuario')) {
-        alert("Ya has iniciado sesión");
-
-        // Si el tipo de usuario en sesión es 'administrador', lo redirige a su vista
-        if (sessionStorage.getItem('tipo') === "administrador") {
-          navigate('/proyecto/administrador');
-        }
-
-        // Si es un usuario normal, lo redirige a su vista correspondiente
-        if (sessionStorage.getItem('tipo') === "usuario") {
-          navigate('/proyecto/usuario');
-        }
-
-        return; // Termina la función si ya había sesión activa
-      }
+      
 
       try {
         // Realiza una petición GET al backend enviando usuario y contraseña por query

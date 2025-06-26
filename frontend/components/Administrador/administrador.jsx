@@ -20,6 +20,11 @@ const Administrador = () => {
   //const [alertText, setAlertText] = useState("");
   const navigate = useNavigate();
 
+  const usuario = sessionStorage.getItem("usuario");
+  if (!usuario) {
+    navigate("/");
+  }
+
   useEffect(() => {
     fetch("http://localhost:9999/Ejercicios")
       .then((response) => response.json())
