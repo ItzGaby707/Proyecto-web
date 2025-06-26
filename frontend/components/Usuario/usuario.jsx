@@ -12,7 +12,6 @@ import {
   MDBCardHeader
 } from "mdb-react-ui-kit";
 import "./usuario.css"; // Asegúrate de importar el CSS
-import PreguntaGeometrica from "../Preguntas/preguntaGeometrica.jsx"; 
 
 const Usuario = () => {
   // Estado para almacenar los ejercicios que se obtienen del servidor

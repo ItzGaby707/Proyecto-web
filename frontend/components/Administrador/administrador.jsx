@@ -156,7 +156,23 @@ const handleEliminar = async (idEjercicio) => {
                         Ver Preguntas
                       </MDBBtn>
                     </Link>
-
+                    
+                    <MDBBtn
+                      style={{
+                        backgroundColor: '#28a745',
+                        color: 'white',
+                        border: 'none'
+                      }}
+                      size="sm"
+                      className="btn-action btn-responsive me-1 mb-1"
+                      onMouseOver={(e) => e.target.style.backgroundColor = '#218838'}
+                      onMouseOut={(e) => e.target.style.backgroundColor = '#28a745'}
+                      onClick={() => navigate(`/proyecto/editar-ejercicio/${ejercicio.idEjercicio}`)}
+                    >
+                      <MDBIcon fas icon="edit" className="me-2 mdb-icon-fix" />
+                      Editar
+                    </MDBBtn>
+                    
                     <MDBBtn
                       style={{
                         backgroundColor: '#FD76D1',

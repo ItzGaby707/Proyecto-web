@@ -216,6 +216,97 @@ app.delete('/Ejercicios/:id', async (req, res) => {
 });
 
 
+// Obtener un ejercicio específico con sus preguntas
+app.get('/Ejercicios/:id', async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    // Obtener información del ejercicio
+    const [ejercicio] = await sequelize.query(`
+      SELECT idEjercicio, nombre, descripcion, creadoPor
+      FROM EJERCICIOS
+      WHERE idEjercicio = ?
+    `, {
+      replacements: [id],
+      type: sequelize.QueryTypes.SELECT
+    });
+
+    if (!ejercicio) {
+      return res.status(404).json({ error: 'Ejercicio no encontrado' });
+    }
+
+    // Obtener preguntas del ejercicio
+    const preguntas = await sequelize.query(`
+      SELECT p.idPregunta, p.pregunta, ep.orden
+      FROM EJERCICIO_PREGUNTA ep
+      JOIN PREGUNTAS p ON ep.idPregunta = p.idPregunta
+      WHERE ep.idEjercicio = ?
+      ORDER BY ep.orden ASC
+    `, {
+      replacements: [id],
+      type: sequelize.QueryTypes.SELECT
+    });
+
+    res.json({
+      ...ejercicio,
+      preguntas: preguntas.map(p => p.idPregunta)
+    });
+
+  } catch (error) {
+    console.error('Error al obtener ejercicio:', error);
+    res.status(500).json({ error: 'Error al obtener ejercicio' });
+  }
+});
+
+// Actualizar un ejercicio
+app.put('/Ejercicios/:id', async (req, res) => {
+  const { id } = req.params;
+  const { nombre, descripcion, preguntas } = req.body;
+
+  if (!nombre || !Array.isArray(preguntas) || preguntas.length === 0) {
+    return res.status(400).json({ error: 'Nombre y preguntas son requeridos' });
+  }
+
+  try {
+    // Actualizar información del ejercicio
+    await sequelize.query(
+      'UPDATE EJERCICIOS SET nombre = ?, descripcion = ? WHERE idEjercicio = ?',
+      { 
+        replacements: [nombre, descripcion || '', id], 
+        type: sequelize.QueryTypes.UPDATE 
+      }
+    );
+
+    // Eliminar preguntas existentes del ejercicio
+    await sequelize.query(
+      'DELETE FROM EJERCICIO_PREGUNTA WHERE idEjercicio = ?',
+      { 
+        replacements: [id], 
+        type: sequelize.QueryTypes.DELETE 
+      }
+    );
+
+    // Insertar las nuevas preguntas
+    for (let i = 0; i < preguntas.length; i++) {
+      await sequelize.query(
+        'INSERT INTO EJERCICIO_PREGUNTA (idEjercicio, idPregunta, orden) VALUES (?, ?, ?)',
+        { 
+          replacements: [id, preguntas[i], i + 1], 
+          type: sequelize.QueryTypes.INSERT 
+        }
+      );
+    }
+
+    res.json({ message: 'Ejercicio actualizado correctamente' });
+
+  } catch (error) {
+    console.error('Error al actualizar ejercicio:', error);
+    res.status(500).json({ error: 'Error interno al actualizar ejercicio' });
+  }
+});
+
+
+
 sequelize.authenticate()
   .then(() => {
     console.log('Conexión exitosa a la base de datos');
