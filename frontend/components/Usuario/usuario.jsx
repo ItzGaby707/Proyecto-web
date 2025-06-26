@@ -11,13 +11,12 @@ import {
   MDBCardBody,
   MDBCardHeader
 } from "mdb-react-ui-kit";
+import Swal from "sweetalert2";
 import "./usuario.css"; // Asegúrate de importar el CSS
 import PreguntaGeometrica from "../Preguntas/preguntaGeometrica.jsx"; 
 
 const Usuario = () => {
   const [ejercicios, setEjercicios] = useState([]);
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertText, setAlertText] = useState("");
   const navigate = useNavigate();
   const usuario = sessionStorage.getItem("usuario")
 
@@ -29,15 +28,32 @@ const Usuario = () => {
       })
       .catch((error) => {
         console.error(error);
-        setShowAlert(true);
-        setAlertText("ERROR EN LA OBTENCIÓN DE EJERCICIOS");
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudieron cargar los ejercicios disponibles',
+          confirmButtonColor: '#FD76D1'
+        });
       });
   }, []);
 
   const handleCerrarSesion = () => {
-    localStorage.clear();
-    sessionStorage.clear();
-    navigate("/");
+    Swal.fire({
+      title: '¿Cerrar sesión?',
+      text: "¿Estás seguro de que quieres salir?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#D1485F',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, cerrar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.clear();
+        sessionStorage.clear();
+        navigate("/");
+      }
+    });
   };
 
   return (
@@ -49,10 +65,6 @@ const Usuario = () => {
           </h5>
         </MDBCardHeader>
         <MDBCardBody className="p-2 p-md-3">
-          {showAlert && (
-              {alertText}
-          )}
-
           <div className="table-container"> 
             <MDBTable striped bordered className="bg-white text-secondary responsive-table mb-1">
               <MDBTableHead style={{ maxWidth: '95%' }}>

@@ -12,6 +12,7 @@ import {
   MDBCheckbox,
   MDBIcon
 } from "mdb-react-ui-kit";
+import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
 const CrearEjercicio = () => {
@@ -30,7 +31,14 @@ useEffect(() => {
       }
     } catch (error) {
       console.warn("SessionStorage no disponible:", error);
-      setMensaje({ tipo: "warning", texto: "Problema de autenticación" });
+      Swal.fire({
+        icon: 'warning',
+        title: 'Problema de autenticación',
+        text: 'No se pudo verificar tu sesión',
+        confirmButtonColor: '#FD76D1',
+        background: '#2d2d2d',
+        color: 'white'
+      });
     }
   }, []);
   useEffect(() => {
@@ -39,7 +47,12 @@ useEffect(() => {
       .then((data) => setPreguntasDisponibles(data))
       .catch((err) => {
         console.error("Error al obtener preguntas:", err);
-        setMensaje({ tipo: "danger", texto: "Error al cargar preguntas" });
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudieron cargar las preguntas disponibles',
+          confirmButtonColor: '#FD76D1',
+        });
       });
   }, []);
 
@@ -50,14 +63,29 @@ useEffect(() => {
       if (preguntasSeleccionadas.length < 5) {
         setPreguntasSeleccionadas([...preguntasSeleccionadas, idPregunta]);
       } else {
-        setMensaje({ tipo: "warning", texto: "Solo puede seleccionar hasta 5 preguntas" });
+        Swal.fire({
+          icon: 'warning',
+          title: 'Límite alcanzado',
+          text: 'Solo puedes seleccionar hasta 5 preguntas',
+          confirmButtonColor: '#FD76D1',
+          color: 'white',
+          timer: 2000,
+          showConfirmButton: false
+        });
       }
     }
   };
 
   const handleCrearEjercicio = () => {
     if (!nombre || preguntasSeleccionadas.length === 0) {
-      setMensaje({ tipo: "danger", texto: "Complete todos los campos y seleccione preguntas" });
+      Swal.fire({
+        icon: 'error',
+        title: 'Selección requerida',
+        text: 'Debes seleccionar al menos una pregunta',
+        confirmButtonColor: '#FD76D1',
+        background: '#2d2d2d',
+        color: 'white'
+      });
       return;
     }
 
@@ -73,12 +101,22 @@ useEffect(() => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setMensaje({ tipo: "success", texto: data.message });
+        Swal.fire({
+          icon: 'success',
+          title: '¡Ejercicio creado!',
+          text: data.message || 'El ejercicio se ha creado correctamente',
+          confirmButtonColor: '#FD76D1',
+        });
         setTimeout(() => navigate("/proyecto/administrador"));
       })
       .catch((err) => {
         console.error("Error al crear ejercicio:", err);
-        setMensaje({ tipo: "danger", texto: "Error al crear ejercicio" });
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: err.message || 'Ocurrió un error al crear el ejercicio',
+          confirmButtonColor: '#FD76D1',
+        });
       });
   };
 

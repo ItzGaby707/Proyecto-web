@@ -4,6 +4,7 @@ import {
   MDBModalHeader, MDBModalTitle, MDBModalBody,
   MDBModalFooter, MDBBtn
 } from "mdb-react-ui-kit";
+import Swal from "sweetalert2";
 
 const EliminarModal = ({ show, toggle,id, pregunta }) => {
   
@@ -21,8 +22,14 @@ const EliminarModal = ({ show, toggle,id, pregunta }) => {
         
     } catch (error) {
         console.log("error al actualizar la pregunta:", error)
-        alert("Error al actualizar la pregunta");
-        
+        //alert("Error al actualizar la pregunta");
+        // alert con Sweetalert
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error al actualizar la pregunta',
+          confirmButtonColor: '#ff00ff'
+        });
     }
     toggle();
     window.location.reload(); 

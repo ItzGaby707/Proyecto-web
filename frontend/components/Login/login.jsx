@@ -12,6 +12,8 @@ import {
   MDBIcon,
   MDBInput
 } from 'mdb-react-ui-kit';
+import Swal from "sweetalert2";
+
 import "./login.css";
 
 import loginweb from "../../src/assets/loginweb.png";
@@ -27,7 +29,15 @@ function App() {
   const handleLogin = async (e) => {
     e.preventDefault();
     if (sessionStorage.getItem('idUsuario')) {
-      alert("Ya has iniciado sesión");
+      
+      await Swal.fire({
+        icon: 'info',
+        title: 'Sesión activa',
+        text: 'Ya has iniciado sesión',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
         if (sessionStorage.getItem('tipo') === "administrador") {
           navigate('/proyecto/administrador');
         }
@@ -45,19 +55,36 @@ function App() {
         sessionStorage.setItem('idUsuario', (usuario.idUsuario));
         sessionStorage.setItem('usuario', (usuario.user));
         sessionStorage.setItem('tipo', (usuario.tipo));
+
+        await Swal.fire({
+          icon: 'success',
+          title: '¡Bienvenido!',
+          text: `Has iniciado sesión como ${usuario.tipo}`,
+          timer: 1500,
+          showConfirmButton: false
+        });
+
         if (usuario.tipo === "administrador") {
           navigate('/proyecto/administrador');
         } else if (usuario.tipo === "usuario") {
           navigate('/proyecto/usuario');
         }
       } else {
-        alert("Credenciales incorrectas o inexistentes");
+        await Swal.fire({
+          icon: 'error',
+          title: 'Usuario no encontrado',
+          text: 'Credenciales incorrectas o inexistentes',
+        });
         setUsername('');
         setPassword('');
       }
     } catch (error) {
       console.error('Error en la conexión:', error);
-      alert('Error en el servidor');
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error de conexión',
+        text: 'No se pudo conectar con el servidor',
+      });
     }
   };
 
