@@ -1,0 +1,63 @@
+/* YO BIEN RESPONSIVE */
+
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -0.5rem; /* Reducimos márgenes laterales */
+  padding: 0 0.25rem; /* Pequeño padding para evitar que el scroll toque los bordes */
+}
+.responsive-table {
+  width: 100%;
+  min-width: 500px; /* Reducimos el ancho mínimo */
+  margin-bottom: 0.5rem; /* Menor margen inferior */
+}
+
+.table-cell {
+  word-wrap: break-word;
+  max-width: 200px;
+  padding: 0.5rem !important; /* Padding más compacto */
+}
+
+@media (max-width: 768px) {
+
+    .MDBContainer.mt-5 {
+        margin-top: 1rem !important; /* Reducimos margen superior del contenedor */
+        padding: 0 0.25rem !important; /* Menor padding lateral */
+    }
+  
+    .user-responsive-table {
+        font-size: 0.9rem;
+     }
+  
+    .responsive-table {
+        font-size: 0.85rem; /* Texto un poco más pequeño */
+        min-width: 450px; /* Ancho mínimo reducido */
+    }
+
+    .table-cell {
+        max-width: 150px; /* Celdas más estrechas */
+        padding: 0.3rem !important; /* Padding más compacto */
+    }
+
+    .user-table-cell {
+        max-width: 200px;
+        padding: 0.5rem !important;
+    }
+  
+    .btn-responsive {
+        padding: 0.2rem 0.4rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    MDBCard, MDBCardBody {
+        padding: 0.5rem !important; /* Menor padding en la tarjeta */
+    }
+
+    MDBCardHeader {
+        padding: 0.75rem !important; /* Header más compacto */
+    }
+
+    MDBCardHeader h5 {
+        font-size: 1rem !important; /* Título más pequeño */
+    }    
+}

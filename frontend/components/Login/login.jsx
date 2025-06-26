@@ -79,12 +79,12 @@ function App() {
           <MDBCol md='6' sm='12' className='d-flex align-items-center'>
             <MDBCardBody className='d-flex flex-column'>
 
-              <div className='d-flex flex-row mt-2 mb-4'>
+              <div className='d-flex flex-column align-items-center mt-2 mb-4'>
                 <img 
                   src={geometrydash}
                   alt="Logo Geometry Flash" 
                   style={{ width: '80px', height: 'auto' }} 
-                  className="me-3"
+                  className="mb-3"
                 />
                 <span className="h1 fw-bold mb-0">Geometry Flash</span>
 

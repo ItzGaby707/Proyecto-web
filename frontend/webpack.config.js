@@ -31,7 +31,7 @@ module.exports = {
     devServer: {
         
         contentBase: path.join(__dirname, 'public'), // en lugar de static.directory
-        port: 5500,
+        port: 5501,
         historyApiFallback: true,
     },
     plugins: [

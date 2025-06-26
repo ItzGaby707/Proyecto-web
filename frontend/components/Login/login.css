@@ -4,10 +4,12 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  margin: 0;
+  padding: 0;
 }
 
 .custom-btn {
-  width: 500px;
+  width: 100%;
   height: 40px;
   color: #fff;
   border-radius: 5px;
@@ -26,10 +28,8 @@ body {
 }
 
 .gradient-custom-2 {
-  
   background: rgb(0,172,238);
   background: linear-gradient(0deg, rgba(0,172,238,1) 0%, rgba(2,126,251,1) 100%);
-  width: 500px;
   height: 40px;
   line-height: 42px;
   padding: 0;
@@ -96,6 +96,51 @@ body {
   width: 100%;
 }
 
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
 
+.logo-container img {
+  margin-bottom: 1rem;
+}
+
+
+/*YO BIEN RESPONSIVE*/
+
+/* Ajustes para móviles */
+@media (max-width: 768px) {
+  .MDBContainer.my-5 {
+    padding: 0.5rem;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .d-flex.flex-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .d-flex.flex-row img {
+    margin-bottom: 1rem;
+  }
+  
+  .h1.fw-bold.mb-0 {
+    font-size: 1.5rem;
+  }
+  
+  MDBCardBody {
+    padding: 1.5rem !important;
+  }
+
+  /*Imagen responsiva*/
+  .logo-container span {
+    font-size: 1.75rem;
+  }
+}
 
 

@@ -1,5 +1,105 @@
-.tabla{
-    color: #4F4F4F;
-    border-radius: 5px;
-    background-color: #ffffff;
+/* administrador.css */
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -0.5rem;
+  padding: 0 0.25rem;
+}
+
+.responsive-table {
+  width: 100%;
+  min-width: 500px;
+  margin-bottom: 0.5rem;
+}
+
+.table-cell {
+  word-wrap: break-word;
+  max-width: 200px;
+  padding: 0.5rem !important;
+}
+
+.btn-action {
+  margin: 0.2rem;
+  white-space: nowrap;
+  height: 32px; /* Altura fija */
+  display: inline-flex; /* Para alinear ícono y texto */
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; /* Centra horizontalmente */
+  min-width: 100px; /* Ancho mínimo para consistencia */
+}
+
+
+/* Asegura altura consistente para todos los botones */
+.btn-with-icon {
+  min-height: 38px; /* Altura estándar de MDBBtn */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ajuste específico para botones pequeños */
+.btn-sm.btn-with-icon {
+  min-height: 32px;
+}
+
+/* Asegura que los iconos tengan espacio consistente */
+.mdb-icon-fix {
+  margin-top: -2px; /* Pequeño ajuste para alinear visualmente */
+}
+
+@media (max-width: 768px) {
+  .MDBContainer.mt-5 {
+    margin-top: 1rem !important;
+    padding: 0 0.25rem !important;
+    max-width: 99% !important;
+  }
+
+  .responsive-table {
+    font-size: 0.85rem;
+    min-width: 450px;
+  }
+
+  .table-cell {
+    max-width: 150px;
+    padding: 0.3rem !important;
+  }
+
+  .btn-responsive {
+    padding: 0.2rem 0.4rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  MDBCard, MDBCardBody {
+    padding: 0.5rem !important;
+  }
+
+  MDBCardHeader {
+    padding: 0.75rem !important;
+  }
+
+  MDBCardHeader h5 {
+    font-size: 1rem !important;
+  }
+
+  .btn-action {
+    height: 28px;
+    min-width: 80px;
+    font-size: 0.75rem !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+  
+  .btn-action .fa {
+    font-size: 0.7rem; /* Ajusta tamaño ícono en móviles */
+  }
+}
+
+
+@media (max-width: 576px) {
+  .responsive-table {
+    min-width: 380px;
+  }
+  
+  .table-cell {
+    max-width: 120px;
+  }
 }

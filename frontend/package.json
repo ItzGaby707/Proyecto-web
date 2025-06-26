@@ -24,7 +24,9 @@
 
     "react-router-dom": "^6.30.0",
 
-    "recharts": "^2.15.3"
+    "recharts": "^2.15.3",
+
+    "sweetalert2": "^11.22.1"
 
   },
 
