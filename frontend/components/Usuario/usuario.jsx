@@ -11,6 +11,7 @@ import {
   MDBCardBody,
   MDBCardHeader
 } from "mdb-react-ui-kit";
+import Swal from "sweetalert2";
 import "./usuario.css"; // Asegúrate de importar el CSS
 
 const Usuario = () => {
@@ -42,6 +43,12 @@ useEffect(() => {
       console.error(error);
       setShowAlert(true);
       setAlertText("ERROR EN LA OBTENCIÓN DE EJERCICIOS");
+      Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudieron obtener los ejercicios.',
+          confirmButtonColor: '#FD76D1'
+        });
     });
 }, []); // El arreglo vacío indica que solo se ejecuta una vez (cuando se monta el componente)
 
@@ -62,10 +69,6 @@ const handleCerrarSesion = () => {
           </h5>
         </MDBCardHeader>
         <MDBCardBody className="p-2 p-md-3">
-          {showAlert && (
-              {alertText}
-          )}
-
           <div className="table-container"> 
             <MDBTable striped bordered className="bg-white text-secondary responsive-table mb-1">
               <MDBTableHead style={{ maxWidth: '95%' }}>

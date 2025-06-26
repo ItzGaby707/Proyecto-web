@@ -394,10 +394,10 @@ useEffect(() => {
                   <MDBBtn
                     color="danger"
                     onClick={handleAumentar}
-                    className="mt-4"
+                    className="mt-4 mb-3"
                   >
                     <MDBIcon fas icon="sign-out-alt" className="me-2" />
-                    Siguiente
+                      Siguiente
                   </MDBBtn>
                 </div>
               </MDBCol>

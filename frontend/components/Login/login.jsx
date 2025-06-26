@@ -12,6 +12,8 @@ import {
   MDBIcon,
   MDBInput
 } from 'mdb-react-ui-kit';
+import Swal from "sweetalert2";
+
 import "./login.css";
 
 import loginweb from "../../src/assets/loginweb.png";
@@ -68,7 +70,12 @@ function App() {
 
         } else {
           // Si el login falla, muestra una alerta y limpia los campos
-          alert("Credenciales incorrectas o inexistentes");
+          Swal.fire({
+            icon: 'error',
+            title: 'Usuario no encontrado',
+            text: 'Credenciales incorrectas o inexistentes',
+            confirmButtonColor: '#FD76D1'
+          });
           setUsername('');
           setPassword('');
         }
@@ -76,7 +83,12 @@ function App() {
       } catch (error) {
         // Si ocurre un error en la conexión, lo muestra en consola y alerta al usuario
         console.error('Error en la conexión:', error);
-        alert('Error en el servidor');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error en el servidor.',
+          confirmButtonColor: '#FD76D1'
+        });
       }
     };
 
