@@ -16,45 +16,50 @@ import "./usuario.css"; // Asegúrate de importar el CSS
 import PreguntaGeometrica from "../Preguntas/preguntaGeometrica.jsx"; 
 
 const Usuario = () => {
-  const [ejercicios, setEjercicios] = useState([]);
-  const navigate = useNavigate();
-  const usuario = sessionStorage.getItem("usuario")
+  // Estado para almacenar los ejercicios que se obtienen del servidor
+const [ejercicios, setEjercicios] = useState([]);
+// Estado para mostrar o no una alerta en caso de error
+const [showAlert, setShowAlert] = useState(false);
+// Texto que se mostrará en la alerta si ocurre un error
+const [alertText, setAlertText] = useState("");
 
-  useEffect(() => {
-    fetch("http://localhost:9999/Ejercicios")
-      .then((response) => response.json())
-      .then((data) => {
-        setEjercicios(data);
-      })
-      .catch((error) => {
-        console.error(error);
-        Swal.fire({
+
+// Hook de React Router para navegar entre rutas
+const navigate = useNavigate();
+// Se obtiene el nombre de usuario almacenado en la sesión (sessionStorage)
+const usuario = sessionStorage.getItem("usuario");
+if (!usuario) {
+  navigate("/"); // Si no hay usuario, redirige a la página principal
+}
+// Hook useEffect que se ejecuta una sola vez cuando el componente se monta
+useEffect(() => {
+  // Se realiza una petición GET al servidor para obtener la lista de ejercicios
+  fetch("http://localhost:9999/Ejercicios")
+    .then((response) => response.json()) // Se convierte la respuesta a JSON
+    .then((data) => {
+      setEjercicios(data); // Se guarda la lista de ejercicios en el estado
+    })
+    .catch((error) => {
+      // En caso de error, se muestra una alerta personalizada
+      console.error(error);
+      setShowAlert(true);
+      setAlertText("ERROR EN LA OBTENCIÓN DE EJERCICIOS");
+      Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'No se pudieron cargar los ejercicios disponibles',
+          text: 'No se pudieron obtener los ejercicios.',
           confirmButtonColor: '#FD76D1'
         });
-      });
-  }, []);
-
-  const handleCerrarSesion = () => {
-    Swal.fire({
-      title: '¿Cerrar sesión?',
-      text: "¿Estás seguro de que quieres salir?",
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#D1485F',
-      cancelButtonColor: '#6c757d',
-      confirmButtonText: 'Sí, cerrar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.clear();
-        sessionStorage.clear();
-        navigate("/");
-      }
     });
-  };
+}, []); // El arreglo vacío indica que solo se ejecuta una vez (cuando se monta el componente)
+
+// Función para cerrar sesión y redirigir al usuario a la página de inicio
+const handleCerrarSesion = () => {
+  localStorage.clear();   // Limpia datos persistentes
+  sessionStorage.clear(); // Limpia datos de sesión actual
+  navigate("/");          // Redirige a la página principal
+};
+
 
   return (
     <MDBContainer className="mt-3 mt-md-5 px-2 px-md-3" style={{ maxWidth: '95%' }}>

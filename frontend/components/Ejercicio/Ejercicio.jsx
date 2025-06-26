@@ -14,9 +14,11 @@ import * as tmImage from '@teachablemachine/image';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 function Ejercicio() {
+  // Estados para manejar la lógica del ejercicio
   const [ejercicios, setEjercicios] = useState([]);
   const [numero, setNumero] = useState(0);
   const [figura, setFigura] = useState('Inicializando...');
+  // Estado para manejar el temporizador y tiempos
   const [countdown, setCountdown] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
@@ -25,18 +27,18 @@ function Ejercicio() {
   // Nuevos estados para rastrear tiempos por pregunta
   const [questionStartTime, setQuestionStartTime] = useState(null);
   const [questionTimes, setQuestionTimes] = useState([]);
-
+  // Referencias para manejar la webcam y el modelo
   const webcamRef = useRef(null);
   const containerRef = useRef(null);
   const modelRef = useRef(null);
   const rafIdRef = useRef(null);
   const timeoutRef = useRef(null);
+  // Hook de React Router para navegar entre rutas
   const navigate = useNavigate();
   const { idEjercicio } = useParams();
   const usuario = sessionStorage.getItem('usuario');
   const MODEL_URL = '/model_figuras/';
 
-  // Registrar tiempo de inicio cuando cargan las preguntas
   useEffect(() => {
     const now = Date.now();
     setStartTime(now);
@@ -50,51 +52,83 @@ function Ejercicio() {
       .catch((err) => console.error(err));
   }, [idEjercicio]);
 
-  useEffect(() => {
-    let isMounted = true;
-    const loadModelAndWebcam = async () => {
-      try {
-        const model = await tmImage.load(
-          MODEL_URL + 'model.json',
-          MODEL_URL + 'metadata.json'
-        );
-        modelRef.current = model;
-        const webcam = new tmImage.Webcam(224, 224, true);
-        await webcam.setup();
-        await webcam.play();
-        webcamRef.current = webcam;
-        if (isMounted && containerRef.current) {
-          containerRef.current.innerHTML = '';
-          containerRef.current.appendChild(webcam.canvas);
-        }
-        detectLoop();
-      } catch (err) {
-        console.error('Error inicializando modelo o cámara:', err);
-        setFigura('Error al cargar modelo');
-      }
-    };
-    const detectLoop = async () => {
-      if (!modelRef.current || !webcamRef.current) return;
-      webcamRef.current.update();
-      const predictions = await modelRef.current.predict(
-        webcamRef.current.canvas
+// Hook useEffect que se ejecuta una vez al montar el componente
+useEffect(() => {
+  let isMounted = true; // Bandera para evitar actualizar el estado si el componente ya se desmontó
+
+  // Función asincrónica que carga el modelo de Teachable Machine y la cámara
+  const loadModelAndWebcam = async () => {
+    try {
+      // Carga del modelo y los metadatos desde la carpeta "public/model_figuras"
+      const model = await tmImage.load(
+        MODEL_URL + 'model.json',
+        MODEL_URL + 'metadata.json'
       );
-      if (predictions.length > 0) {
-        const mejor = predictions.reduce((a, b) =>
-          a.probability > b.probability ? a : b
-        );
-        setFigura(mejor.className);
+
+      // Se guarda el modelo cargado en una referencia para usarlo después
+      modelRef.current = model;
+
+      // Se inicializa la cámara usando Teachable Machine
+      const webcam = new tmImage.Webcam(224, 224, true); // ancho, alto, espejo activado
+      await webcam.setup(); // Solicita permisos para acceder a la cámara
+      await webcam.play();  // Comienza a capturar video
+
+      // Se guarda la webcam en la referencia para mantenerla activa
+      webcamRef.current = webcam;
+
+      // Si el componente sigue montado, se añade el canvas de la cámara al DOM
+      if (isMounted && containerRef.current) {
+        containerRef.current.innerHTML = ''; // Limpia el contenedor
+        containerRef.current.appendChild(webcam.canvas); // Agrega la vista de la cámara
       }
-      rafIdRef.current = requestAnimationFrame(detectLoop);
-    };
-    loadModelAndWebcam();
-    return () => {
-      isMounted = false;
-      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-      if (webcamRef.current) webcamRef.current.stop();
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
+
+      // Comienza el ciclo de detección continua
+      detectLoop();
+
+    } catch (err) {
+      // En caso de error, se muestra en consola y en pantalla
+      console.error('Error inicializando modelo o cámara:', err);
+      setFigura('Error al cargar modelo');
+    }
+  };
+
+  // Función que detecta en bucle la figura frente a la cámara
+  const detectLoop = async () => {
+    // Si no hay modelo o webcam, no hace nada
+    if (!modelRef.current || !webcamRef.current) return;
+
+    // Actualiza el frame actual de la webcam
+    webcamRef.current.update();
+
+    // Ejecuta el modelo sobre el canvas de la webcam y obtiene predicciones
+    const predictions = await modelRef.current.predict(
+      webcamRef.current.canvas
+    );
+
+    // Si hay predicciones, elige la de mayor probabilidad
+    if (predictions.length > 0) {
+      const mejor = predictions.reduce((a, b) =>
+        a.probability > b.probability ? a : b
+      );
+      // Actualiza el estado con la clase detectada (nombre de la figura)
+      setFigura(mejor.className);
+    }
+
+    // Continúa la detección con el siguiente frame (recursivamente)
+    rafIdRef.current = requestAnimationFrame(detectLoop);
+  };
+  // Se ejecuta la carga del modelo y cámara
+  loadModelAndWebcam();
+
+  // Función de limpieza que se ejecuta al desmontar el componente
+  return () => {
+    isMounted = false; // Evita que se intente actualizar estado si ya no está montado
+    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current); // Detiene el bucle
+    if (webcamRef.current) webcamRef.current.stop(); // Apaga la cámara
+    if (timeoutRef.current) clearTimeout(timeoutRef.current); // Limpia cualquier temporizador pendiente
+  };
+}, []); // El arreglo vacío indica que se ejecuta solo una vez al montar
+
 
   // Función para registrar tiempo de pregunta y avanzar
   const avanzarPregunta = () => {
@@ -124,36 +158,46 @@ function Ejercicio() {
   };
 
   // Avanzar con retraso y al finalizar calcular tiempo
-  useEffect(() => {
-    const expected = ejercicios[numero]?.nombreFigura;
-    if (expected && figura === expected) {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      setCountdown(3);
-      const countdownInterval = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(countdownInterval);
-            return null;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      timeoutRef.current = setTimeout(() => {
-        avanzarPregunta();
-        setCountdown(null);
-        clearInterval(countdownInterval);
-      }, 3000);
-    } else {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-      setCountdown(null);
+  // Hook que se ejecuta cada vez que cambia la figura detectada, el ejercicio actual o el tiempo de la pregunta
+useEffect(() => {
+  // Se obtiene el nombre de la figura que se espera en la pregunta actual
+  const expected = ejercicios[numero]?.nombreFigura;
+  // Si existe una figura esperada y la figura detectada es igual a la esperada
+  if (expected && figura === expected) {
+    // Si ya había un temporizador activo, lo limpia para evitar duplicaciones
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    // Inicia una cuenta regresiva visual de 3 segundos antes de avanzar
+    setCountdown(3);
+    // Disminuye el contador en pantalla cada segundo
+    const countdownInterval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdownInterval); // Detiene la cuenta atrás
+          return null;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    // Después de 3 segundos, avanza automáticamente a la siguiente pregunta
+    timeoutRef.current = setTimeout(() => {
+      avanzarPregunta();           // Guarda el tiempo y avanza
+      setCountdown(null);         // Oculta el contador
+      clearInterval(countdownInterval); // Limpia intervalo
+    }, 3000);
+  } else {
+    // Si la figura no coincide o aún no hay figura, se detiene cualquier conteo anterior
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
     }
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [figura, ejercicios, numero, questionStartTime]);
+    setCountdown(null); // Reinicia el contador
+  }
+  // Limpieza al desmontar o antes de ejecutar de nuevo
+  return () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  };
+}, [figura, ejercicios, numero, questionStartTime]);
+
 
   const handleAumentar = () => {
     if (timeoutRef.current) {
