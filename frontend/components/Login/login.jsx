@@ -24,42 +24,63 @@ function App() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    if (sessionStorage.getItem('idUsuario')) {
-      alert("Ya has iniciado sesión");
+  // Función que maneja el evento de inicio de sesión del formulario
+    const handleLogin = async (e) => {
+      // Evita que el formulario recargue la página al enviarse
+      e.preventDefault();
+
+      // Verifica si ya hay una sesión activa
+      if (sessionStorage.getItem('idUsuario')) {
+        alert("Ya has iniciado sesión");
+
+        // Si el tipo de usuario en sesión es 'administrador', lo redirige a su vista
         if (sessionStorage.getItem('tipo') === "administrador") {
           navigate('/proyecto/administrador');
         }
+
+        // Si es un usuario normal, lo redirige a su vista correspondiente
         if (sessionStorage.getItem('tipo') === "usuario") {
           navigate('/proyecto/usuario');
         }
-      return;
-    }
-    try { 
-      const response = await fetch(`http://localhost:9999/login?User=${username}&password=${password}`);
-      const usuario = await response.json();
 
-
-      if (usuario.status === "yes") {
-        sessionStorage.setItem('idUsuario', (usuario.idUsuario));
-        sessionStorage.setItem('usuario', (usuario.user));
-        sessionStorage.setItem('tipo', (usuario.tipo));
-        if (usuario.tipo === "administrador") {
-          navigate('/proyecto/administrador');
-        } else if (usuario.tipo === "usuario") {
-          navigate('/proyecto/usuario');
-        }
-      } else {
-        alert("Credenciales incorrectas o inexistentes");
-        setUsername('');
-        setPassword('');
+        return; // Termina la función si ya había sesión activa
       }
-    } catch (error) {
-      console.error('Error en la conexión:', error);
-      alert('Error en el servidor');
-    }
-  };
+
+      try {
+        // Realiza una petición GET al backend enviando usuario y contraseña por query
+        const response = await fetch(`http://localhost:9999/login?User=${username}&password=${password}`);
+
+        // Convierte la respuesta en formato JSON
+        const usuario = await response.json();
+
+        // Si el servidor confirma que las credenciales son correctas
+        if (usuario.status === "yes") {
+          // Almacena los datos de sesión en sessionStorage
+          sessionStorage.setItem('idUsuario', usuario.idUsuario);
+          sessionStorage.setItem('usuario', usuario.user);
+          sessionStorage.setItem('tipo', usuario.tipo);
+
+          // Redirige según el tipo de usuario
+          if (usuario.tipo === "administrador") {
+            navigate('/proyecto/administrador');
+          } else if (usuario.tipo === "usuario") {
+            navigate('/proyecto/usuario');
+          }
+
+        } else {
+          // Si el login falla, muestra una alerta y limpia los campos
+          alert("Credenciales incorrectas o inexistentes");
+          setUsername('');
+          setPassword('');
+        }
+
+      } catch (error) {
+        // Si ocurre un error en la conexión, lo muestra en consola y alerta al usuario
+        console.error('Error en la conexión:', error);
+        alert('Error en el servidor');
+      }
+    };
+
 
   return (
     <MDBContainer className="my-5">

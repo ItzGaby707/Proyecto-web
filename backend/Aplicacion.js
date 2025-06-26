@@ -15,35 +15,46 @@ app.use(express.json());
 
 // Ruta de login
 app.get('/login', async (req, res) => {
+
+  // Extrae el nombre de usuario y la contraseña desde los parámetros de la URL (query string)
   const { User: user, password } = req.query;
-
   try {
+    // Busca en la base de datos un usuario que coincida exactamente con el nombre de usuario y contraseña proporcionados
     const usuario = await Usuario.findOne({
-      where: { USERNAME: user, PASSWORD: password }
+      where: {
+        USERNAME: user,
+        PASSWORD: password
+      }
     });
-
+    // Si encuentra un usuario válido
     if (usuario) {
+      // Devuelve una respuesta con estado "yes" y algunos datos clave del usuario
       res.json({
-        status: 'yes',
-        idUsuario: usuario.idUsuario,
-        tipo: usuario.TIPOUSUARIO,
-        user: usuario.USERNAME
+        status: 'yes',                // Indica que el login fue exitoso
+        idUsuario: usuario.idUsuario, // ID del usuario en la base de datos
+        tipo: usuario.TIPOUSUARIO,    // Tipo de usuario (por ejemplo, administrador o normal)
+        user: usuario.USERNAME        // Nombre de usuario
       });
     } else {
+      // Si no se encuentra un usuario con esas credenciales, se devuelve un estado negativo
       res.json({
-        status: 'no',
-        tipo: 'none',
-        user: 'none'
+        status: 'no',     // Login fallido
+        tipo: 'none',     // Sin tipo de usuario
+        user: 'none'      // Usuario no identificado
       });
     }
   } catch (error) {
-    console.error(' Error en la consulta:', error);
+    // Si ocurre algún error durante la consulta, se captura y se muestra en consola
+    console.error('Error en la consulta:', error);
+
+    // Se devuelve un error 500 indicando un problema en el servidor
     res.status(500).json({
       status: 'error',
       message: 'Error en el servidor'
     });
   }
 });
+
 
 // Ruta para obtener preguntas
 app.get('/Preguntas', async (req, res) => {
